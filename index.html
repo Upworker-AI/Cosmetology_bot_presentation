@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Косметология Катерины — Telegram-бот для записи клиентов</title>
+<meta name="description" content="Telegram-бот для косметологии: запись клиентов, расписание, заявки и управление статусами.">
+<style>
+:root{
+  --bg:#faf7f2;
+  --card:#ffffff;
+  --text:#26221f;
+  --muted:#6f655d;
+  --accent:#7d9b76;
+  --accent-dark:#5f7a5a;
+  --line:#e8e0d6;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+}
+.container{max-width:1080px;margin:0 auto;padding:0 24px}
+header{
+  position:sticky;top:0;z-index:10;
+  background:rgba(250,247,242,.92);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+.brand{font-weight:800;font-size:18px;letter-spacing:.02em}
+.nav a{
+  color:var(--text);text-decoration:none;font-weight:600;font-size:15px;
+  padding:10px 18px;border-radius:999px;border:1px solid var(--line);
+  background:#fff;transition:.2s;
+}
+.nav a:hover{border-color:var(--accent);color:var(--accent-dark)}
+.hero{padding:96px 0 72px}
+.eyebrow{
+  display:inline-block;margin-bottom:20px;padding:8px 14px;border-radius:999px;
+  background:#eef3ec;color:var(--accent-dark);font-size:14px;font-weight:700;
+}
+h1{
+  font-size:clamp(38px,6vw,68px);line-height:1.08;margin:0 0 24px;
+  letter-spacing:-.03em;font-weight:850;
+}
+.hero p{max-width:640px;font-size:20px;color:var(--muted);margin:0 0 36px}
+.cta{display:flex;gap:14px;flex-wrap:wrap}
+.button{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 28px;border-radius:999px;text-decoration:none;font-weight:700;
+  transition:.2s;border:1px solid transparent;
+}
+.button-primary{background:var(--accent);color:#fff}
+.button-primary:hover{background:var(--accent-dark);transform:translateY(-2px)}
+.button-secondary{background:#fff;color:var(--text);border-color:var(--line)}
+.button-secondary:hover{border-color:var(--accent);color:var(--accent-dark)}
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:64px;
+}
+.stat{
+  background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;
+}
+.stat b{display:block;font-size:28px;line-height:1.2}
+.stat span{color:var(--muted);font-size:15px}
+section{padding:72px 0}
+.section-head{max-width:720px;margin-bottom:44px}
+h2{font-size:clamp(28px,4vw,42px);margin:0 0 14px;letter-spacing:-.02em}
+.section-head p{color:var(--muted);font-size:18px;margin:0}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px;
+  transition:.2s;
+}
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(38,34,31,.07)}
+.icon{
+  width:48px;height:48px;border-radius:14px;display:grid;place-items:center;
+  background:#eef3ec;margin-bottom:18px;font-size:22px;
+}
+.card h3{margin:0 0 10px;font-size:20px}
+.card p{margin:0;color:var(--muted);font-size:16px}
+.flow{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px;
+}
+.step{
+  background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;
+}
+.step-num{
+  width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  background:var(--accent);color:#fff;font-weight:800;margin-bottom:16px;
+}
+.step h3{margin:0 0 8px;font-size:18px}
+.step p{margin:0;color:var(--muted);font-size:15px}
+.owner{
+  background:#26221f;color:#fff;border-radius:32px;padding:64px;margin-top:16px;
+}
+.owner h2{color:#fff}
+.owner .section-head p{color:#c9c1b8}
+.owner-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.owner-card{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;padding:24px;
+}
+.owner-card h3{margin:0 0 8px;font-size:19px}
+.owner-card p{margin:0;color:#c9c1b8;font-size:15px}
+.final{
+  text-align:center;padding:88px 24px;background:#eef3ec;border-radius:32px;margin:24px 0 80px;
+}
+.final h2{margin-bottom:14px}
+.final p{max-width:560px;margin:0 auto 32px;color:var(--muted);font-size:18px}
+footer{
+  border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:14px;
+}
+.footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media(max-width:860px){
+  .grid,.flow,.owner-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  .hero{padding:64px 0 48px}
+  section{padding:56px 0}
+  .owner{padding:40px 24px}
+}.screens-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.screen-card {
+  margin: 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+  transition: .2s;
+}
+
+.screen-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(38, 34, 31, .08);
+}
+
+.screen {
+  aspect-ratio: 9 / 16;
+  background: #f1ece4;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.screen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.screen-card figcaption {
+  padding: 20px 22px 24px;
+}
+
+.screen-card figcaption b {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.screen-card figcaption span {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+@media (max-width: 860px) {
+  .screens-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.admin-screens {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 860px) {
+  .admin-screens {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <div class="brand">Косметология Катерины</div>
+    <a href="https://t.me/record_name_bot" target="_blank" rel="noopener">Открыть бота</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">Telegram-бот для записи клиентов</span>
+      <h1>Запись клиентов — без лишней переписки</h1>
+      <p>
+        Бот помогает клиентам самостоятельно выбрать услугу, удобную дату и время,
+        оставить контакты и отправить заявку. Владелец получает уведомление и управляет
+        записями в административной панели.
+      </p>
+      <div class="cta">
+        <a class="button button-primary" href="https://t.me/record_name_bot" target="_blank" rel="noopener">
+          Попробовать бота
+        </a>
+        <a class="button button-secondary" href="#features">Возможности</a>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><b>24/7</b><span>Клиент может оставить заявку в любое время</span></div>
+        <div class="stat"><b>1 формат</b><span>Все заявки приходят структурированно</span></div>
+        <div class="stat"><b>Меньше рутины</b><span>Меньше однотипных сообщений и уточнений</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="container">
+      <div class="section-head">
+        <h2>Что умеет бот</h2>
+        <p>Клиент проходит запись за несколько нажатий, а владелец получает заявку в удобном виде.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="icon">💆‍♀️</div>
+          <h3>Выбор услуги</h3>
+          <p>Клиент выбирает категорию и нужную услугу: уход за лицом, курс или консультацию.</p>
+        </div>
+        <div class="card">
+          <div class="icon">📅</div>
+          <h3>Дата и время</h3>
+          <p>Бот показывает доступные даты и время с учётом рабочего расписания и перерывов.</p>
+        </div>
+        <div class="card">
+          <div class="icon">📋</div>
+          <h3>Заявка на запись</h3>
+          <p>Клиент создаёт заявку, проверяет данные и подтверждает запись.</p>
+        </div>
+        <div class="card">
+          <div class="icon">📱</div>
+          <h3>Контактные данные</h3>
+          <p>Клиент может поделиться номером из Telegram или ввести его вручную.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🔔</div>
+          <h3>Уведомления</h3>
+          <p>О новой заявке владелец получает уведомление с основными деталями записи.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🗂</div>
+          <h3>История записей</h3>
+          <p>Клиент может посмотреть свои заявки и их текущий статус.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-head">
+        <h2>Как проходит запись</h2>
+        <p>Простой сценарий без необходимости объяснять клиенту правила по сообщениям.</p>
+      </div>
+
+      <div class="flow">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Выбор услуги</h3>
+          <p>Клиент открывает бота и выбирает категорию и услугу.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Выбор времени</h3>
+          <p>Бот предлагает доступные даты и свободное время.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Контакты</h3>
+          <p>Клиент подтверждает номер телефона и при необходимости добавляет комментарий.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>Уведомление</h3>
+          <p>Владелец получает заявку и управляет её статусом.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="owner">
+        <div class="section-head">
+          <h2>Инструменты для владельца</h2>
+          <p>Административная панель помогает не терять заявки и контролировать расписание.</p>
+        </div>
+
+        <div class="owner-grid">
+          <div class="owner-card">
+            <h3>Административная панель</h3>
+            <p>Удобный доступ к заявкам и основным настройкам бота.</p>
+          </div>
+          <div class="owner-card">
+            <h3>Просмотр и фильтрация</h3>
+            <p>Заявки можно просматривать и фильтровать по нужным параметрам.</p>
+          </div>
+          <div class="owner-card">
+            <h3>Управление статусами</h3>
+            <p>Заявку можно подтвердить, отменить или отметить как завершённую.</p>
+          </div>
+          <div class="owner-card">
+            <h3>Перенос записи</h3>
+            <p>Запись можно перенести на другую дату и время.</p>
+          </div>
+          <div class="owner-card">
+            <h3>Рабочее расписание</h3>
+            <p>Настраиваются рабочие дни, часы работы и перерывы.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="screens">
+    <div class="container">
+      <div class="section-head">
+        <h2>Примеры работы бота</h2>
+        <p>Так клиент проходит запись: от выбора услуги до подтверждения заявки.</p>
+      </div>
+
+      <div class="screens-grid">
+        <figure class="screen-card">
+          <div class="screen">
+            <img src="screens/01-menu.png" alt="Главное меню Telegram-бота">
+          </div>
+          <figcaption>
+            <b>1. Главное меню</b>
+            <span>Клиент выбирает нужный раздел: запись, услуги, контакты или свои записи.</span>
+          </figcaption>
+        </figure>
+
+        <figure class="screen-card">
+          <div class="screen">
+            <img src="screens/02-service.png" alt="Выбор услуги">
+          </div>
+          <figcaption>
+            <b>2. Выбор услуги</b>
+            <span>Услуги сгруппированы по категориям, с ценой и описанием.</span>
+          </figcaption>
+        </figure>
+
+        <figure class="screen-card">
+          <div class="screen">
+            <img src="screens/03-date.png" alt="Выбор даты">
+          </div>
+          <figcaption>
+            <b>3. Выбор даты</b>
+            <span>Клиент выбирает удобную дату из доступного расписания.</span>
+          </figcaption>
+        </figure>
+
+        <figure class="screen-card">
+          <div class="screen">
+            <img src="screens/04-time.png" alt="Выбор времени">
+          </div>
+          <figcaption>
+            <b>4. Выбор времени</b>
+            <span>Бот показывает доступные интервалы с учётом рабочего графика.</span>
+          </figcaption>
+        </figure>
+
+        <figure class="screen-card">
+          <div class="screen">
+            <img src="screens/05-confirmation.png" alt="Подтверждение заявки">
+          </div>
+          <figcaption>
+            <b>5. Подтверждение заявки</b>
+            <span>Клиент проверяет данные и подтверждает запись.</span>
+          </figcaption>
+        </figure>
+
+        <figure class="screen-card">
+          <div class="screen">
+            <img src="screens/06-owner.png" alt="Уведомление владельцу">
+          </div>
+          <figcaption>
+            <b>6. Заявка владельцу</b>
+            <span>Владелец получает уведомление с деталями и управляет статусом записи.</span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+  <section id="admin">
+    <div class="container">
+      <div class="section-head">
+        <h2>Административная панель</h2>
+        <p>Владелец управляет заявками, статусами и расписанием прямо в Telegram.</p>
+      </div>
+
+      <div class="admin-screens">
+        <figure class="screen-card">
+          <div class="screen">
+            <!-- Вставьте скриншот админ-панели -->
+            <img src="screens/07-admin-panel.png" alt="Административная панель бота">
+          </div>
+          <figcaption>
+            <b>1. Панель управления</b>
+            <span>Быстрый доступ к заявкам, расписанию и основным настройкам.</span>
+          </figcaption>
+        </figure>
+
+        <figure class="screen-card">
+          <div class="screen">
+            <!-- Вставьте скриншот списка заявок -->
+            <img src="screens/08-admin-bookings.png" alt="Список заявок">
+          </div>
+          <figcaption>
+            <b>2. Заявки клиентов</b>
+            <span>Заявки можно просматривать и фильтровать по статусу.</span>
+          </figcaption>
+        </figure>
+
+        <figure class="screen-card">
+          <div class="screen">
+            <!-- Вставьте скриншот управления статусом -->
+            <img src="screens/09-admin-status.png" alt="Управление статусом заявки">
+          </div>
+          <figcaption>
+            <b>3. Управление статусами</b>
+            <span>Заявку можно подтвердить, отменить или отметить как завершённую.</span>
+          </figcaption>
+        </figure>
+
+        <figure class="screen-card">
+          <div class="screen">
+            <!-- Вставьте скриншот расписания -->
+            <img src="screens/10-admin-schedule.png" alt="Управление расписанием">
+          </div>
+          <figcaption>
+            <b>4. Расписание и перерывы</b>
+            <span>Настраиваются рабочие дни, часы работы, перерывы и перенос записей.</span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="container">
+      <div class="final">
+        <h2>Посмотрите, как это работает</h2>
+        <p>Откройте бота в Telegram и пройдите запись как клиент: от выбора услуги до подтверждения заявки.</p>
+        <a class="button button-primary" href="https://t.me/record_name_bot" target="_blank" rel="noopener">
+          Открыть бота в Telegram
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer-row">
+    <div>Косметология Катерины</div>
+    <div>Telegram-бот для автоматизации записи клиентов</div>
+  </div>
+</footer>
+
+</body>
+</html>
